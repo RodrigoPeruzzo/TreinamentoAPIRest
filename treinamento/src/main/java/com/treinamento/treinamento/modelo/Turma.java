@@ -66,4 +66,13 @@ public class Turma {
 	public void setNumeroVagas(int numeroVagas) {
 		this.numeroVagas = numeroVagas;
 	}
+
+	public List<Disciplina> getDisciplina() {
+		return Disciplina;
+	}
+
+	public void setDisciplina(List<Disciplina> disciplina) {
+		Disciplina = disciplina;
+	}
+	
 }

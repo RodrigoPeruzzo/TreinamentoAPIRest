@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.treinamento.treinamento.modelo.Aluno;
 import com.treinamento.treinamento.modelo.FormaIngresso;
 import com.treinamento.treinamento.modelo.Turma;
@@ -17,6 +18,8 @@ public class AlunoDto {
 	private String nome;
 	private String email;
 	private String cpf;
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	private Turma turma;
 	
 	public AlunoDto(Aluno aluno) {
 		this.id = aluno.getId();
@@ -25,6 +28,7 @@ public class AlunoDto {
 		this.nome = aluno.getNome();
 		this.cpf = aluno.getCpf();
 		this.email = aluno.getEmail();
+		this.turma = aluno.getTurma();
 	}
 	
 	public Long getId() {
@@ -72,6 +76,14 @@ public class AlunoDto {
 		this.formaIngresso = formaIngresso;
 	}
 	
+	public Turma getTurma() {
+		return turma;
+	}
+
+	public void setTurma(Turma turma) {
+		this.turma = turma;
+	}
+
 	public static List<AlunoDto> converter(List<Aluno> lista){
 		return lista.stream().map(AlunoDto::new).collect(Collectors.toList());
 	}

@@ -1,7 +1,11 @@
 package com.treinamento.treinamento.controller.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.treinamento.treinamento.modelo.Disciplina;
 import com.treinamento.treinamento.modelo.Turma;
 
 public class TurmaDto {
@@ -11,12 +15,16 @@ public class TurmaDto {
 	private int periodoLetivo;
 	private int numeroVagas;
 	
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	private List<Disciplina> disciplina = new ArrayList<Disciplina>();
+	
 	public TurmaDto(Turma turma) {
 		this.id = turma.getId();
 		this.descricao = turma.getDescricao();
 		this.anoLetivo = turma.getAnoLetivo();
 		this.periodoLetivo = turma.getPeriodoLetivo();
 		this.numeroVagas = turma.getNumeroVagas();
+		this.disciplina = turma.getDisciplina();
 	}
 	
 	public Long getId() {
@@ -50,6 +58,10 @@ public class TurmaDto {
 		this.numeroVagas = numeroVagas;
 	}
 	
+	public List<Disciplina> getDisciplina() {
+		return disciplina;
+	}
+
 	public static List<TurmaDto> converter(List<Turma> lista){
 		return lista.stream().map(TurmaDto::new).collect(Collectors.toList());
 	}
