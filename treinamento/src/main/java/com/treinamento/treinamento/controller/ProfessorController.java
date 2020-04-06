@@ -1,6 +1,7 @@
 package com.treinamento.treinamento.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,14 +21,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.treinamento.treinamento.controller.dto.DetalhesDoProfessorDto;
-import com.treinamento.treinamento.controller.dto.DisciplinaDto;
+import com.treinamento.treinamento.controller.dto.ProfessorAlunosDto;
 import com.treinamento.treinamento.controller.dto.ProfessorDto;
 import com.treinamento.treinamento.controller.form.AtualizacaoProfessorForm;
-import com.treinamento.treinamento.controller.form.DisciplinaForm;
 import com.treinamento.treinamento.controller.form.ProfessorForm;
 import com.treinamento.treinamento.modelo.Disciplina;
 import com.treinamento.treinamento.modelo.Professor;
+import com.treinamento.treinamento.modelo.Turma;
+import com.treinamento.treinamento.modelo.Aluno;
+import com.treinamento.treinamento.repository.AlunoRepository;
+import com.treinamento.treinamento.repository.DisciplinaRepository;
 import com.treinamento.treinamento.repository.ProfessorRepository;
+import com.treinamento.treinamento.repository.TurmaRepository;
 
 @RestController
 @RequestMapping("/professor")
@@ -35,6 +40,15 @@ public class ProfessorController {
 	
 	@Autowired
 	private ProfessorRepository professorRepository;
+	
+	@Autowired
+	private DisciplinaRepository disciplinaRepository;
+	
+	@Autowired
+	private TurmaRepository turmaRepository;
+	
+	@Autowired
+	private AlunoRepository alunoRepository;
 	
 	@GetMapping
 	public List<ProfessorDto> listar(){
@@ -60,6 +74,29 @@ public class ProfessorController {
 		
 		if (professor.isPresent()) {
 			return ResponseEntity.ok(new DetalhesDoProfessorDto(professor.get()));
+		}
+		
+		return ResponseEntity.notFound().build();
+	}
+	
+	@GetMapping("/professor-alunos/{id}")
+	public ResponseEntity<ProfessorAlunosDto> detalharAlunos(@PathVariable Long id) {
+		Optional<Professor> professor = professorRepository.findById(id);
+		
+		List<Aluno> listAluno = new ArrayList<Aluno>();
+		
+		if (professor.isPresent()) {
+			Optional<Disciplina> disciplina = disciplinaRepository.findByProfessorId(professor.get().getId());
+			
+			if (disciplina.isPresent()) {
+				List<Turma> listTurma = turmaRepository.findAllByDisciplina_Id(disciplina.get().getId());
+				
+				listTurma.forEach(a -> {
+					listAluno.addAll(alunoRepository.findAllByTurma_Id(a.getId()));					
+				});
+			}
+			
+			return ResponseEntity.ok(new ProfessorAlunosDto(professor.get(), listAluno));
 		}
 		
 		return ResponseEntity.notFound().build();

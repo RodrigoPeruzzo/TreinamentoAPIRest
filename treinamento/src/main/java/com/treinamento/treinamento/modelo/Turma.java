@@ -24,7 +24,7 @@ public class Turma {
 	
 	@ManyToMany(cascade = { CascadeType.ALL })
     @JoinColumn(name="id")
-	private List<Disciplina> Disciplina = new ArrayList<Disciplina>();
+	private List<Disciplina> disciplina = new ArrayList<Disciplina>();
 	
 	public Turma() {}
 	
@@ -33,7 +33,7 @@ public class Turma {
 		this.anoLetivo = anoLetivo;
 		this.periodoLetivo = periodoLetivo;
 		this.numeroVagas = numeroVagas;
-		this.Disciplina = listDisciplina;
+		this.disciplina = listDisciplina;
 	}
 	
 	public Long getId() {
@@ -68,11 +68,11 @@ public class Turma {
 	}
 
 	public List<Disciplina> getDisciplina() {
-		return Disciplina;
+		return this.disciplina;
 	}
 
 	public void setDisciplina(List<Disciplina> disciplina) {
-		Disciplina = disciplina;
+		this.disciplina = disciplina;
 	}
 	
 }
